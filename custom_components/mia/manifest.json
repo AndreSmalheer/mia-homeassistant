@@ -1,0 +1,9 @@
+{
+  "domain": "mia",
+  "name": "Mia AI",
+  "version": "0.0.1",
+  "documentation": "https://github.com/AndreSmalheer/mia-homeassistant",
+  "issue_tracker": "https://github.com/AndreSmalheer/mia-homeassistant/issues",
+  "requirements": [],
+  "codeowners": ["@<AndreSmalheer>"]
+}

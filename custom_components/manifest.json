@@ -1,9 +1,0 @@
-{
-  "domain": "mia",
-  "name": "Mia AI",
-  "version": "0.0.1",
-  "documentation": "https://github.com/<your-username>/mia-homeassistant",
-  "issue_tracker": "https://github.com/<your-username>/mia-homeassistant/issues",
-  "requirements": [],
-  "codeowners": ["@<your-username>"]
-}

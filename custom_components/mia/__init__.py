@@ -1,5 +1,13 @@
-from homeassistant.core import HomeAssistant
+import logging
+
+import httpx
+
+from homeassistant.core import HomeAssistant, ServiceCall
+
 from .const import DOMAIN
+
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
@@ -8,36 +16,39 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 
 async def async_setup_entry(hass: HomeAssistant, entry):
-    """Set up from config flow."""
-    return True
+    """Set up Mia from a config entry."""
 
-import logging
+    server_url = entry.data["server_url"].rstrip("/")
 
-import httpx
+    async def ping_service(call: ServiceCall):
+        """Ping Mia backend."""
 
-DOMAIN = "mia"
-
-_LOGGER = logging.getLogger(__name__)
-
-
-async def async_setup(hass: HomeAssistant, config: dict):
-
-    async def ping_service(call):
-        url = "http://100.98.38.73:8000/health"
+        url = f"{server_url}/health"
 
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(url)
 
-            _LOGGER.info("Backend responded: %s", response.text)
+            _LOGGER.info(
+                "Mia backend responded: %s",
+                response.text
+            )
 
         except Exception as err:
-            _LOGGER.error("Ping failed: %s", err)
+            _LOGGER.error(
+                "Failed to ping Mia backend: %s",
+                err
+            )
 
     hass.services.async_register(
         DOMAIN,
         "ping",
         ping_service,
+    )
+
+    _LOGGER.info(
+        "Mia connected to backend: %s",
+        server_url
     )
 
     return True

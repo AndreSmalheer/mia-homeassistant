@@ -1,0 +1,15 @@
+send_message:
+  name: Send message
+  description: Send a message to Mia AI
+  fields:
+    message:
+      name: Message
+      description: The message to send to Mia
+      required: true
+      example: "Hey Mia"
+      selector:
+        text:
+
+ping:
+  name: Ping backend
+  description: Check if Mia backend is online

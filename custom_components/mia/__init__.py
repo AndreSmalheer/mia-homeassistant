@@ -21,6 +21,7 @@ async def async_setup_entry(hass: HomeAssistant, entry):
     server_url = entry.data["server_url"].rstrip("/")
 
     async def ping_service(call: ServiceCall):
+
         """Ping Mia backend."""
 
         url = f"{server_url}/health"
@@ -40,10 +41,43 @@ async def async_setup_entry(hass: HomeAssistant, entry):
                 err
             )
 
+    async def send_message_service(call: ServiceCall):
+        """Send message to Mia AI."""
+
+        message = call.data["message"]
+
+        url = f"{server_url}/message"
+
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    url,
+                    json={
+                        "message": message
+                    }
+                )
+
+            _LOGGER.info(
+                "Mia response: %s",
+                response.text
+            )
+
+        except Exception as err:
+            _LOGGER.error(
+                "Failed to send message: %s",
+                err
+            )
+
     hass.services.async_register(
         DOMAIN,
         "ping",
         ping_service,
+    )
+
+    hass.services.async_register(
+        DOMAIN,
+        "send_message",
+        send_message_service,
     )
 
     _LOGGER.info(

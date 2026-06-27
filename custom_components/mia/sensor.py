@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 import httpx
 
@@ -26,7 +27,6 @@ async def async_setup_entry(
 
 
     async def update_status():
-
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
@@ -35,7 +35,10 @@ async def async_setup_entry(
 
             data = response.json()
 
-            return data["status"]
+            if data.get("status") == "ok":
+                return "online"
+
+            return "offline"
 
         except Exception as err:
             _LOGGER.error(
@@ -51,7 +54,7 @@ async def async_setup_entry(
         _LOGGER,
         name="Mia status",
         update_method=update_status,
-        update_interval=30,
+        update_interval=timedelta(seconds=30),
     )
 
 

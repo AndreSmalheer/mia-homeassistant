@@ -20,27 +20,6 @@ async def async_setup_entry(hass: HomeAssistant, entry):
 
     server_url = entry.data["server_url"].rstrip("/")
 
-    async def ping_service(call: ServiceCall):
-
-        """Ping Mia backend."""
-
-        url = f"{server_url}/health"
-
-        try:
-            async with httpx.AsyncClient() as client:
-                response = await client.get(url)
-
-            _LOGGER.info(
-                "Mia backend responded: %s",
-                response.text
-            )
-
-        except Exception as err:
-            _LOGGER.error(
-                "Failed to ping Mia backend: %s",
-                err
-            )
-
     async def send_message_service(call: ServiceCall):
         """Send message to Mia AI."""
 
@@ -70,14 +49,13 @@ async def async_setup_entry(hass: HomeAssistant, entry):
 
     hass.services.async_register(
         DOMAIN,
-        "ping",
-        ping_service,
-    )
-
-    hass.services.async_register(
-        DOMAIN,
         "send_message",
         send_message_service,
+    )
+
+    await hass.config_entries.async_forward_entry_setups(
+        entry,
+        ["sensor"]
     )
 
     _LOGGER.info(

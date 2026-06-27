@@ -20,6 +20,5 @@ class MiaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema({
                 vol.Required("server_url"): str,
-                vol.Required("api_key"): str,
             }),
         )
